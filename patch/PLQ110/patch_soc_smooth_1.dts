@@ -1,0 +1,13 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&oplus_chg_comm>;
+		__overlay__ {
+			smooth_strategy {
+				oplus_spec,reserve_table_centipercent = <0x00 0x64 0x00 0x00 0x00 0x64>;
+			};
+		};
+	};
+};

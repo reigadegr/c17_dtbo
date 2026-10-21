@@ -1,0 +1,12 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&oplus_chg_comm>;
+		__overlay__ {
+			oplus,reserve_chg_soc = <0x00>;
+			oplus,hidden_soc_percent = <0x00>;
+		};
+	};
+};

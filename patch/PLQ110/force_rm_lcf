@@ -1,0 +1,4 @@
+r oplus_pps_charge pps_third_lcf_strategy
+r oplus_pps_charge pps_oplus_lcf_strategy
+r oplus_ufcs_charge ufcs_oplus_lcf_strategy
+r oplus_ufcs_charge ufcs_third_lcf_strategy

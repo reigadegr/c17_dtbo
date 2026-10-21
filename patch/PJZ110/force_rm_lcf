@@ -1,0 +1,6 @@
+r oplus_ufcs_charge ufcs_oplus_lcf_strategy
+r oplus_ufcs_charge ufcs_third_lcf_strategy
+r oplus_ufcs_charge silicon_p_770/ufcs_oplus_lcf_strategy
+r oplus_ufcs_charge silicon_p_770/ufcs_third_lcf_strategy
+r oplus_pps_charge silicon_p_770/pps_oplus_lcf_strategy
+r oplus_pps_charge silicon_p_770/pps_third_lcf_strategy

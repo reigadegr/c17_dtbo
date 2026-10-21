@@ -1,0 +1,53 @@
+/dts-v1/;
+/plugin/;
+
+/{
+	fragment@0 {
+		target = <&oplus_ufcs_charge>;
+		__overlay__ {
+			silicon_p_770 {
+				oplus,ufcs_strategy_batt_high_temp = <530 530 530 530 530 530>;
+				oplus,ufcs_charge_strategy_temp = <0 50 120 160 400 480 530>;
+				
+				ufcs_charge_third_strategy {
+					oplus,temp_range = <0 50 120 160 210 400 480 530>;
+				};
+				ufcs_charge_oplus_strategy {
+					oplus,temp_range = <0 50 120 160 210 400 480 530>;
+				};
+			};
+		};
+	};
+	
+	fragment@1{
+		target = <&oplus_pps_charge>;
+		__overlay__ {
+			silicon_p_770 {
+				oplus,pps_strategy_batt_high_temp = <530 530 530 530 530 530>;
+				oplus,pps_charge_strategy_temp = <0 50 120 160 400 480 530>;
+				
+				pps_charge_third_strategy {
+					oplus,temp_range = <0 50 120 160 210 400 480 530>;
+				};
+				pps_charge_oplus_strategy {
+					oplus,temp_range = <0 50 120 160 210 400 480 530>;
+				};
+			};
+		};
+	};
+	
+	fragment@2 {
+		target = <&oplus_adsp_voocphy>;
+		__overlay__ {
+			oplus_spec,vooc_low_temp = <0>;
+			oplus_spec,vooc_little_cold_temp = <0>;
+			oplus_spec,vooc_cool_temp = <0>;
+			oplus_spec,vooc_little_cool_temp = <100>;
+			oplus_spec,vooc_little_cool_high_temp = <150>;
+			oplus_spec,vooc_normal_low_temp = <420>;
+			oplus_spec,vooc_normal_high_temp = <480>;
+			oplus_spec,vooc_high_temp = <530>;
+			oplus_spec,vooc_over_high_temp = <550>;
+		};
+	};
+};

@@ -1,0 +1,1 @@
+需要python3环境，将dtbo拖入run.bat，即可生成分区avb信息

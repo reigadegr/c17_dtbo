@@ -1,0 +1,467 @@
+<!DOCTYPE html><html lang=zh-CN class=app-booting><script type=importmap>{"imports":{"2yJSZ":"./trend.d4843197.js","4wvO2":"./auto.89c48d40.js","664X4":"./auto.58e83bdd.js","dKVCH":"./chartjs-plugin-datalabels.esm.eb1f7a90.js","dcv35":"./chg-parms.b2ca533c.js"}}</script><meta charset=UTF-8><meta name=viewport content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>OPlus_battmon</title><link rel=stylesheet href=Oplus_battmon_webroot.7abe91cc.css><body>
+    <div id=authShell class=auth-shell hidden>
+        <div class=auth-shell__panel>
+            <div class=auth-shell__header>
+                <span id=authStateBadge class=auth-shell__badge>检测中</span>
+                <h1 id=authTitle class=auth-shell__title>正在准备登录上下文</h1>
+                <p id=authDescription class=auth-shell__desc>请稍候，正在检查本地登录状态。</p>
+            </div>
+
+            <form id=authInitForm class=auth-form hidden>
+                <div class=auth-form__field>
+                    <label for=qqInput class=lic-popup__label>QQ</label>
+                    <input id=qqInput inputmode=numeric autocomplete=username class=lic-popup__input placeholder="请输入 QQ">
+                </div>
+                <div class=auth-form__field>
+                    <label for=initPasswordInput class=lic-popup__label>登录密码(hash加密，无法反向解密，请放心输入)</label>
+                    <input id=initPasswordInput type=password autocomplete=current-password class=lic-popup__input placeholder="至少 7 位，含大小写字母">
+                </div>
+                <p id=authInlineMessage class="auth-form__message auth-shell__message lic-popup__msg" hidden></p>
+                <button id=authInitSubmitBtn class="lic-popup__btn lic-popup__btn--primary">登录</button>
+            </form>
+
+            <div id=authActionGroup class=auth-actions hidden>
+                <button id=authManualResetBtn type=button class=lic-popup__btn>删除登录信息</button>
+            </div>
+
+            <div class=auth-public>
+                <button id=authDonateBtn type=button class=auth-public__btn>模块购买</button>
+            </div>
+            <p class=auth-public__hint>如需重置密码，联系bybycode</p>
+        </div>
+    </div>
+
+    <main class=app-shell>
+        <section class="app-page app-page--visible mobile-monitor" id=monitorSection>
+            <div class=mobile-monitor__shell>
+                <header class=mobile-monitor__hero>
+                    <div class=mobile-monitor__summary>
+                        <div class=mobile-monitor__power-card>
+                            <span class=overview-main__label>实时功率</span>
+                            <div id=batteryPower class="mobile-monitor__power overview-main__power">已读乱回中</div>
+                        </div>
+                        <div class="mobile-monitor__power-card mobile-monitor__soc-card">
+                            <span class=overview-percent__label>当前电量</span>
+                            <span id=batteryPercentValue class=overview-percent__value>已读乱回中</span>
+                        </div>
+                    </div>
+
+                    <div class=mobile-monitor__thermal-card>
+                        <div class=mobile-monitor__thermal>
+                            <div class=overview-thermal-group__row>
+                                <span class=overview-thermal-group__label>物理温度</span>
+                                <span id=temperature class=overview-thermal-group__value>已读乱回中</span>
+                            </div>
+                            <div class=overview-thermal-group__row>
+                                <span class=overview-thermal-group__label>温控温度</span>
+                                <span id=shell_temperature class=overview-thermal-group__value>已读乱回中</span>
+                            </div>
+                            <div class=overview-thermal-group__row>
+                                <span class=overview-thermal-group__label>电池类型</span>
+                                <span id=BatteryType class=overview-thermal-group__value>已读乱回中</span>
+                            </div>
+                            <div class=overview-thermal-group__row>
+                                <span class=overview-thermal-group__label>生产日期</span>
+                                <span id=battery_manu_date class=overview-thermal-group__value>已读乱回中</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=mobile-monitor__capacity>
+                        <div class=overview-meta__item>
+                            <span class=overview-meta__label>QMAX</span>
+                            <span id=battery_qmax class=overview-meta__value>已读乱回中</span>
+                        </div>
+                        <div class=overview-meta__item>
+                            <span class=overview-meta__label>测算容量</span>
+                            <span id=capacity class=overview-meta__value>已读乱回中</span>
+                        </div>
+                        <div class=overview-meta__item>
+                            <span class=overview-meta__label>循环次数</span>
+                            <span id=cycleCount class=overview-meta__value>已读乱回中</span>
+                        </div>
+                        <div class=overview-meta__item>
+                            <span class=overview-meta__label>剩余容量</span>
+                            <span id=remaining class=overview-meta__value>已读乱回中</span>
+                        </div>
+                    </div>
+                </header>
+
+                <section class=mobile-monitor__section>
+                    <div class=mobile-monitor__metric-grid>
+                        <article class=mobile-monitor__metric-card>
+                            <span class=metric-card__label>电芯电压</span>
+                            <span id=cellVoltage class=metric-card__value>已读乱回中</span>
+                        </article>
+
+                        <article class=mobile-monitor__metric-card>
+                            <span class=metric-card__label>压差</span>
+                            <span id=voltageDiff class="metric-card__value voltage-diff">已读乱回中</span>
+                        </article>
+
+                        <article class=mobile-monitor__metric-card>
+                            <span class=metric-card__label>当前电流</span>
+                            <span id=current class=metric-card__value>已读乱回中</span>
+                        </article>
+
+                        <article class=mobile-monitor__metric-card>
+                            <span class=metric-card__label>QMAX 分容</span>
+                            <span id=qmax12 class=metric-card__value>已读乱回中</span>
+                        </article>
+
+                        <article class=mobile-monitor__metric-card>
+                            <span class=metric-card__label>关机电压</span>
+                            <span id=shutdownVoltage class=metric-card__value>已读乱回中</span>
+                        </article>
+
+                        <article class="mobile-monitor__metric-card mobile-monitor__metric-card--wide">
+                            <span class=metric-card__label>电池寿命</span>
+                            <span id=batteryLife class=metric-card__value>已读乱回中</span>
+                        </article>
+                    </div>
+                </section>
+
+                <div id=CheckBattery class=mobile-monitor__status>
+                    <span id=CheckBatteryText class=mobile-monitor__status-main>已读乱回中</span>
+                    <span id=CheckBatteryMeta class=mobile-monitor__status-meta>等待在线检查</span>
+                </div>
+
+                <section class="mobile-monitor__charge mobile-monitor__charge-section mobile-monitor__section">
+                    <div class=mobile-monitor__section-head>
+                        <span class=section-inline-title>充电状态</span>
+                    </div>
+                    <div class=mobile-monitor__charge-grid id=ischarging>
+                        <article class=mobile-monitor__charge-card>
+                            <span class=charge-card__label>协议</span>
+                            <span id=charge_type_str class=charge-card__value>已读乱回中</span>
+                        </article>
+
+                        <article class=mobile-monitor__charge-card>
+                            <span class=charge-card__label>总线</span>
+                            <span id=wired_vbus_mv class=charge-card__value>已读乱回中</span>
+                        </article>
+
+                        <article class=mobile-monitor__charge-card>
+                            <span class=charge-card__label>峰值</span>
+                            <span id=maxChargePower class=charge-card__value>已读乱回中</span>
+                        </article>
+
+
+
+                        <article class="mobile-monitor__charge-card mobile-monitor__charge-card--wide">
+                            <span class=charge-card__label>充满预计</span>
+                            <span id=time_to_full_avg class=charge-card__value>已读乱回中</span>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section class="app-page chart-card" id=trendSection hidden>
+            <div class=chart-header>
+                <span class=chart-title>图表</span>
+                <div class=chart-legend>
+                    <span class="legend-pill legend-pill--power">功率</span>
+                    <span class="legend-pill legend-pill--temp">温度</span>
+                    <span class="legend-pill legend-pill--muted">最近 30 条</span>
+                </div>
+            </div>
+            <div class="chart-frame is-loading" id=trendFrame>
+                <div id=trendPlaceholder class=chart-placeholder>正在准备图表…</div>
+                <canvas id=combinedChart></canvas>
+            </div>
+            <div class=history-log-panel id=historyLogPanel>
+                <div class=history-log-panel__head>
+                    <div>
+                        <span class=history-log-panel__eyebrow>历史记录</span>
+                        <strong class=history-log-panel__title>电池历史记录</strong>
+                    </div>
+                    <button type=button class=history-log-panel__refresh id=historyLogRefresh>更新</button>
+                </div>
+                <p class=history-log-panel__hint>选择日期或时间范围后，在独立窗口查看采样曲线和周期统计。</p>
+                <div class=history-log-range>
+                    <label>
+                        <span>开始</span>
+                        <input id=historyLogStart type=datetime-local step=1>
+                    </label>
+                    <label>
+                        <span>结束</span>
+                        <input id=historyLogEnd type=datetime-local step=1>
+                    </label>
+                    <button type=button id=historyLogApply>展示</button>
+                </div>
+                <div class=history-log-toolbar>
+                    <button type=button data-history-action=day>24小时统计</button>
+                    <button type=button id=openCyclesPopupBtn>最近充放电</button>
+                    <button type=button data-history-action=prev-cycle>上一个周期</button>
+                    <button type=button data-history-action=next-cycle>下一个周期</button>
+                </div>
+                <div id=historyLogList hidden aria-hidden=true></div>
+            </div>
+        </section>
+    </main>
+
+    <div id=cyclesPopup class=history-log-popup style=display:none>
+        <div class=history-log-popup__sheet>
+            <div class=history-log-popup__header>
+                <div>
+                    <span class=history-log-popup__eyebrow>Recent Cycles</span>
+                    <h3 class=history-log-popup__title>最近充放电</h3>
+                </div>
+                <button id=closeCyclesPopupBtn type=button class=history-log-popup__close>×</button>
+            </div>
+            <p class=history-log-chart-hint style=margin-top:4px>点击下方周期可快速查看曲线统计</p>
+            <div class=history-log-cycles>
+                <div class=history-log-cycles__head style=margin-top:10px>
+                    <strong>记录列表</strong>
+                    <span>最近10个周期</span>
+                </div>
+                <div class=history-log-cycles__list id=historyLogCycleList style=max-height:none>
+                    <div class=history-log-cycles__empty>正在准备最近周期…</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id=historyLogPopup class=history-log-popup style=display:none>
+        <div class=history-log-popup__sheet>
+            <div class=history-log-popup__header>
+                <div>
+                    <span class=history-log-popup__eyebrow>Battery History</span>
+                    <h3 class=history-log-popup__title id=historyLogTitle>电池历史记录</h3>
+                </div>
+                <button id=closeHistoryLogPopup type=button class=history-log-popup__close>×</button>
+            </div>
+            <div class=history-log-meta id=historyLogMeta>
+                <span>等待选择日期</span>
+            </div>
+            <div class=history-log-chart>
+                <canvas id=historyLogCanvas></canvas>
+                <div class=history-log-loading id=historyLogLoading>选择日期后展示记录</div>
+                <div class=history-log-cursor id=historyLogCursor hidden></div>
+            </div>
+            <p class=history-log-chart-hint>触摸图表查看详细数据</p>
+            <div class=history-log-stats id=historyLogStats></div>
+            <p class=history-log-stats-note>电量和FCC计算均无法采集到峰值，准确度较低，仅作参考</p>
+        </div>
+    </div>
+
+    <div id=advancedHub class="advanced-hub lic-popup" style=display:none>
+        <div class="advanced-hub__content lic-popup__content">
+            <button id=closeAdvancedHub class=lic-popup__close>×</button>
+
+            <div class="advanced-hub__header lic-popup__header">
+                <h3 class=lic-popup__title>高级中心</h3>
+            </div>
+
+            <div class=advanced-hub__grid>
+                <button id=showSettingsBtn type=button class="advanced-action advanced-action--primary" data-advanced-target=settings>
+                    <span class=advanced-action__meta>SET</span>
+                    <span class=advanced-action__title>恒压设置</span>
+                    <span class=advanced-action__desc>协议开关、伪装温度与参数配置</span>
+                </button>
+
+                <button id=showAdvLink type=button class=advanced-action data-advanced-target=adv>
+                    <span class=advanced-action__meta>LOG</span>
+                    <span class=advanced-action__title>高参</span>
+                    <span class=advanced-action__desc>读取 OPLUS_CHG 日志并按模块聚合</span>
+                </button>
+
+                <button id=showLicLink type=button class=advanced-action data-advanced-target=lic>
+                    <span class=advanced-action__meta>AUTH</span>
+                    <span class=advanced-action__title>账号</span>
+                    <span class=advanced-action__desc>初始化登录、改密与退出登录</span>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <div id=licPopup class=lic-popup style=display:none>
+        <div class="auth-popup lic-popup__content">
+            <button id=closeLicPopup class=lic-popup__close>×</button>
+
+            <div class=lic-popup__header>
+                <h3 class=lic-popup__title>账号与验证</h3>
+                <span id=licStatusLabel class="lic-popup__status lic-status--pending">待检测</span>
+            </div>
+
+            <div class=auth-summary>
+                <div class=auth-summary__item>
+                    <span class=auth-summary__label>当前 QQ</span>
+                    <span id=accountQqValue class=auth-summary__value>未初始化</span>
+                </div>
+                <div class=auth-summary__item>
+                    <span class=auth-summary__label>本地版本</span>
+                    <span id=accountLicenseVersion class=auth-summary__value>0</span>
+                </div>
+                <div class=auth-summary__item>
+                    <span class=auth-summary__label>运行状态</span>
+                    <span id=accountRuntimeGate class=auth-summary__value>待检测</span>
+                </div>
+            </div>
+
+            <div class="auth-popup__section lic-popup__section">
+                <label for=changeQqInput class=lic-popup__label>QQ</label>
+                <input id=changeQqInput class=lic-popup__input autocomplete=username readonly>
+            </div>
+
+            <form id=changePasswordForm class="auth-form auth-popup__section lic-popup__section">
+                <div class=auth-form__field>
+                    <label for=oldPasswordInput class=lic-popup__label>旧密码</label>
+                    <input id=oldPasswordInput type=password class=lic-popup__input autocomplete=current-password placeholder=请输入旧密码>
+                </div>
+                <div class=auth-form__field>
+                    <label for=newPasswordInput class=lic-popup__label>新密码</label>
+                    <input id=newPasswordInput type=password class=lic-popup__input autocomplete=new-password placeholder="至少 7 位，含大小写字母">
+                </div>
+                <button id=changePasswordSubmitBtn class="lic-popup__btn lic-popup__btn--primary">修改密码</button>
+            </form>
+
+            <p id=licSaveStatus class="lic-popup__msg lic-popup__msg--error"></p>
+
+            <div class="auth-popup__actions lic-popup__footer lic-popup__section">
+                <button id=logoutBtn class=lic-popup__btn type=button>退出登录</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id=svgPopup class="donate-popup lic-popup" style=display:none>
+        <div class=donate-popup__content>
+            <button id=closePopup class="donate-popup__close lic-popup__close">×</button>
+
+            <div class=donate-popup__graphic>
+                <svg style=width:100%;height:auto viewBox="0 0 511 511"><path d="M17 62v45h90V17H17Zm77 0v32H30V30h64Z"/><path d="M43 62v19h38V43H43Z"/><path d="M133 30v13h-13v13.1l6.3-.3 6.2-.3.3-6.3.3-6.2h11.8l.3 6.2.3 6.3 6.3.3 6.2.3V94h-13v26h-25v13h-13v-13H94v13h13v12H81v-25H68v25H30v-11.9l6.3-.3 6.2-.3.3-6.3.3-6.2H30v13H17v12h13v13H17v13h13v13H17v26.1l6.3-.3 6.2-.3.3-6.3.3-6.2H43v-26h25v-26h13v13h26v-13h13v-12h13v25h-13v13h38v-26h13v13h13v13h-13v13h-13v13h-13v25h-12v26h-13v-38h-13v-13H81v-13h26v-13H81v13H56v13h12v13H56v12H43v13H30v-13H17v13h13v13h13v-13h64v13H56v13h12v13H56.1l-.3 6.3-.3 6.2-12.8.3-12.7.3V274H17v13h13v12H17v13h13v13H17v26h26v25H17v13h51v-13H56v-25H43v-13h13v-13h12v13h13v13H67.9l.3 6.2.3 6.3 19.3.3 19.2.2v12H94v13h26v12.9l6.3.3 6.2.3.3 6.2.3 6.3H145v-13h13v26h13v38h-13v-25h-13v-13h-25v13h25v12h-12v13h-13v12.9l6.3.3 6.2.3.3 6.3.3 6.2H158v-13h26v-13.1l12.8.3 12.7.3.3 6.3.3 6.2H197v13h13v-13h11.9l.3-6.3.3-6.2 6.3-.3 6.2-.3V479h13v-13h13v13h26v13h11.9l.3-6.2.3-6.3 12.8-.3 12.7-.3V453h13v13h13v13h-13v13h13v-13h38v13h13v-26h26v26h25v-26h26v13h-13v13h26v-26h-13.1l.3-6.3.3-6.2 6.3-.3 6.2-.3V376h-26v-12h-25v12h-13v-12h-26v-13h-13v-13h-13.1l.3 12.7.3 12.8 12.8.3 12.7.3v11.8l-12.7.3-12.8.3-.3 12.7-.3 12.8H364v-38h-13v-26h13v-13h-13v13h-8.6c-7.4 0-9.1.3-13 2.6l-4.4 2.6V389h-13v-25h-13v25h13v13h-25v13h-13v-26h13.1l-.3-6.3-.3-6.2-6.2-.3-6.3-.3v-11.8l6.3-.3 6.2-.3.3-6.3.3-6.2H261v13h-13v-13h-51v-13h6.6c6.2 0 6.5-.1 6.2-2.3-.3-2.1-.7-2.2-13-2.5l-12.8-.3v2.6c0 2.4-.2 2.5-6.5 2.5H171v-6.5c0-5.8.2-6.5 2-6.5s2-.7 2-6.5V312h-17v52.1l-6.2-.3-6.3-.3-.3-12.8-.3-12.7H120v-13H68v-13h39v-13H68v-25h26v13.1l12.8-.3 12.7-.3.3-6.2.3-6.3H145v25h26v-11.9l-6.2-.3-6.3-.3-.3-6.2-.3-6.3H145v-13h13v-26h-13v-13h13v-12h13v6c0 5.3.2 6 2 6 1.9 0 2-.7 2-12.5s-.1-12.5-2-12.5c-1.8 0-2-.7-2-6.5s.2-6.5 2-6.5c1.7 0 2-.7 2-4.5V175h17.1c16.2 0 17.1-.1 17.6-2 .5-1.7 1.4-2 6.3-2s5.8.3 6.3 2c.5 1.9 1.4 2 13.1 2H248v-17h-26v-13h26v-11.9l-6.2-.3-6.3-.3-.3-6.3-.3-6.2H261v25h26v-12h12v25h-25v17h19c18.3 0 19-.1 19-2 0-1.8.7-2 6.5-2s6.5.2 6.5 2c0 1.7.7 2 4 2h4l.2 17.2.3 17.3 8.8.3 8.7.3V235h-13v-6.6c0-6.2-.1-6.5-2.2-6.2s-2.3.9-2.6 6.5c-.3 6.2-.2 6.3 2.3 6.3 2.4 0 2.5.2 2.5 6.5v6.5h13v13h-18.1l.3 6.2c.3 5.7.5 6.3 2.6 6.6 2 .3 2.2.9 2.2 6.8 0 5-.3 6.4-1.5 6.4-.9 0 0 1.4 2.3 3.4 4.6 4.2 9.2 13.2 9.2 18v3.6h16v-13h12v26h26v13h64v13h13v-13h13v-26h-39v-25h-12v-13h51v-13h-26v-13h-13v-26h13v13h13v13h13v-51h-13v-13h13v-26h-13v-25h-13v-13h-13v13h-12v-13h-26v13h-13v-13h-13V94h-13.1l.3-6.3.3-6.2 6.3-.3 6.2-.3V68h-13V56h13V17h-25v13h12v26h-12v38h-13V68h-13V56.1l6.3-.3 6.2-.3.3-6.3.3-6.2H338v13.1l-6.2-.3-6.3-.3-.3-6.3-.3-6.2H312V17h-13v13h-12V17h-13v26h-13V30h-13V17h-38v13h24.9l.3 12.7.3 12.8 6.3.3 6.2.3V43h13v13.1l6.3-.3 6.2-.3.3-6.3.3-6.2H287v13h12v12h13v12.9l-6.2.3-6.3.3-.3 12.7-.3 12.8H312V94h13v39.1l-6.2-.3-6.3-.3-.3-6.3-.3-6.2H261V81h-13V68h-13v26h-13V68h-12V56h-13V43h-26v13h-13V30h13V17h-38Zm179 19.5V56h-13V43h13ZM184 62v6h26v26h12v13h13V94h13v13h-13v13.1l-6.2-.3-6.3-.3-.3-6.3-.3-6.2H210V94h-13v26h13v13h12v12h-12v-12h-13v12h-26v-25h-13V94h13V81h13V68h-13V56h13Zm154 12.5V81h-13V68h13Zm13 26v6.5h-13V94h13Zm25.2 6.2.3 12.8 6.2.3 6.2.3.3 6.2.3 6.2 6.3.3 6.2.3V145h13v-12h26v51h25v13h13v13h-26v12h-12v13h-13v-25h-13v12h-13v13h13v26h-26v13h26v13h-13v12h13v13h-26v-38h-13v13h-25v-26h13v-39h12v-12h13v-12.9l-6.2-.3-6.3-.3-.3-6.3-.3-6.2H338v-26h-13v-13h13v13h38v-13h-25v-12h-13v-12.9l12.8-.3 12.7-.3.3-12.8.3-12.7h11.8ZM158 139v6h-13v-12h13Zm308 6.5V158h13v13h-26v-38h13Zm-256.2 19.2.3 6.3H197v-13.1l6.3.3 6.2.3Zm102.2-.2v6.5h-13v-13h13Zm51.8 38.7-.3 6.3-6.2.3-6.3.3V197h13.1ZM107 216v6H68v-12h39Zm13 45v13H94v-13h13v-13h13Zm25-6.5v6.5h-12v-13h12Zm308 0v6.5h-12v13h-13v-13h13v-13h12ZM441 293v6h-13v-12h13ZM42.8 305.7l.3 6.3H30v-13.1l6.3.3 6.2.3Zm25.2-.2v6.5H56v-13h12Zm385 13v6.5h-25v-13h25Zm-333.2 32.2-.3 12.8-6.2.3-6.3.3V351H94v-13h26.1Zm77 6.5-.3 6.3-6.2.3-6.3.3V376h-13v13h26v-13.1l6.3.3 6.2.3.3 6.2.3 6.3H197v13h24.9l.3-12.8.3-12.7 6.3-.3 6.2-.3V402h-13v13h13v13h13v-13h26v13h-13v25h-26v-12h-13v12h-38v-25h-13v-26h-13v-13h-13.1l.3-6.3.3-6.2 12.8-.3 12.7-.3V351h26.1ZM351 376.5V389h-13v13h13v26h13v13h64v12h25v-12h13v11.9l-6.2.3-6.3.3-.3 6.2-.3 6.3H428v-13l-25.7.2-25.8.3-.3 6.2-.3 6.3H351v-25h-13v-26h-13v38h-13v13h-13v-13h-12v13h-13v-24.9l6.3-.3 6.2-.3.3-6.3.3-6.2H299v-13h26v-26h13v-25h13Zm-77 6v6.5h-13v13h-13v-26h26Zm179 0v6.5h26v26h-26v13h-12v-26h12v-13h-12v-13h12Zm-25 26V428h-39v-39h39Z"/><path d="M171 100.5v6.5h13V94h-13Zm13 26v6.5h13v-13h-13Zm218 51V197h13v-13h13v13.1l6.3-.3 6.2-.3.3-6.3.3-6.2H428v-26h-26Zm-26 0v6.5h13v-13h-13Zm13 38.5v6h-13v13h13v-13h13v-12h-13ZM184 421.5v6.5h26v13h12v-26h-38ZM299 447v6h13v-12h-13Zm103-38.5v6.5h13v-13h-13Zm-218-385V30h13V17h-13Zm141 0V30h26V17h-26ZM402 62v45h90V17h-90Zm77 0v32h-64V30h64Z"/><path d="M428 62v19h38V43h-38ZM120 87.5v19.6l6.3-.3 6.2-.3v-38l-6.2-.3-6.3-.3Zm154 13v6.5h13V94h-13Zm-154 90v6.6l6.3-.3 6.2-.3.3-6.3.3-6.2H120Zm51 70.5c0 12.3.1 13 2 13s2-.7 2-13-.1-13-2-13-2 .7-2 13m295 32v6h26v-12h-26Zm-346 12.5v6.5h13.1l-.3-6.3-.3-6.2-6.2-.3-6.3-.3Zm115.7 28.2c-.4.3-.7 1.5-.7 2.5 0 1.7 1.1 1.8 13 1.8h13v-5h-12.3c-6.8 0-12.7.3-13 .7m38.3 1.8c0 2.4.2 2.5 6.6 2.5 6.2 0 6.5-.1 6.2-2.3-.3-2-.9-2.2-6.5-2.5-6.2-.3-6.3-.2-6.3 2.3m28.2 9.5c-5.3 3.3-4 5.4 3.6 5.8l6.2.3V347c0-3.9-.1-4-3.2-4-1.8 0-4.8.9-6.6 2M17 447v45h90v-90H17Zm77 0v32H30v-64h64Z"/><path d="M43 447v19h38v-38H43Z"/></svg>
+            </div>
+            <p class=donate-popup__note>本模块可售价 20 元 / 2 许可。<br>QQ 和酷安名称均为 bybycode，其他渠道均有可能为诈骗渠道。<br>联系 @bybycode
+                进入付费群。<br>截图使用微信扫码。</p>
+        </div>
+    </div>
+
+    <div id=advPopup class=lic-popup>
+        <div class=lic-popup__content>
+            <button id=closeAdvPopup class=lic-popup__close>×</button>
+
+            <div class=lic-popup__header>
+                <h3 class=lic-popup__title>高级参数读取</h3>
+            </div>
+
+            <div class=lic-popup__section>
+                <div id=advBody>
+                    <div id=header>
+                        <span id=status class="status-badge status-stopped">Stopped</span>
+                    </div>
+                    <div id=modules></div>
+                    <button id=scroll-btn onclick=scrollToBottom()>⬇</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id=settingsPopup class=lic-popup style=display:none>
+        <div class=lic-popup__content>
+            <button id=closeSettingsPopup class=lic-popup__close>×</button>
+
+            <div class=lic-popup__header>
+                <h3 class=lic-popup__title>恒压设置</h3>
+            </div>
+
+            <div class=settings-scroll>
+
+                <div class=lic-popup__section>
+                    <label class=setting-label>充电协议开关</label>
+                    <div class=lic-popup__switch-container style="justify-content:space-between;align-items:center;padding:4px 0;display:flex">
+                        <span class=lic-popup__label>UFCS 协议</span>
+                        <label class=lic-popup__switch>
+                            <input type=checkbox id=ufcsSwitch>
+                            <span class=lic-popup__slider></span>
+                        </label>
+                    </div>
+
+                    <div class=lic-popup__switch-container style="justify-content:space-between;align-items:center;padding:4px 0;display:flex">
+                        <span class=lic-popup__label>PPS 协议</span>
+                        <label class=lic-popup__switch>
+                            <input type=checkbox id=ppsSwitch>
+                            <span class=lic-popup__slider></span>
+                        </label>
+                    </div>
+
+                    <div class=lic-popup__switch-container style="justify-content:space-between;align-items:center;padding:4px 0;display:flex">
+                        <span class=lic-popup__label>SVOOC 协议</span>
+                        <label class=lic-popup__switch>
+                            <input type=checkbox id=svoocSwitch>
+                            <span class=lic-popup__slider></span>
+                        </label>
+                    </div>
+                    <hr class=section-divider>
+                    <label class=setting-label>伪装温度(36°充电最快)</label>
+
+                    <div class=lic-popup__switch-container style="justify-content:space-between;align-items:center;padding:4px 0;display:flex">
+                        <span class=lic-popup__label>伪装电池温度</span>
+                        <label class=lic-popup__switch>
+                            <input type=checkbox id=fakeTempSwitch>
+                            <span class=lic-popup__slider></span>
+                        </label>
+                    </div>
+                    <hr class=section-divider>
+                    <label class=setting-label>恒压参数配置</label>
+                    <div id=settingsContainer>
+                        <p id=settingsLoadingMsg>正在加载...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class=lic-popup__footer>
+                <button id=saveSettingsBtn class="lic-popup__btn lic-popup__btn--primary">保存配置</button>
+                <button id=rebootCVBtn class="lic-popup__btn lic-popup__btn--primary" hidden>重启恒压</button>
+                <button id=LOGBtn class="lic-popup__btn lic-popup__btn--primary">生成充电日志</button>
+                <p id=settingsSaveStatus class=lic-popup__msg></p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer id=versionFooter>
+        Loading version...
+    </footer>
+
+    <nav class=bottom-nav aria-label=页面导航>
+        <button type=button class="bottom-nav__item bottom-nav__item--monitor is-active" data-nav-target=monitorSection>
+            <span class=bottom-nav__icon aria-hidden=true>
+                <svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 8 8h-8Z"/><path d="M13 3.2a8.8 8.8 0 0 1 7.8 7.8H13Z"/></svg>
+            </span>
+            <span class=bottom-nav__label>监控</span>
+        </button>
+        <button type=button class="bottom-nav__item bottom-nav__item--trend" data-nav-target=trendSection>
+            <span class=bottom-nav__icon aria-hidden=true>
+                <svg viewBox="0 0 24 24"><path d="M5 18h14M7 16V9M12 16V6M17 16v-4"/></svg>
+            </span>
+            <span class=bottom-nav__label>图表</span>
+        </button>
+        <button type=button class="bottom-nav__item bottom-nav__item--utility" id=navAdvancedBtn>
+            <span class=bottom-nav__icon aria-hidden=true>
+                <svg viewBox="0 0 24 24"><path d="M14.7 6.3a3 3 0 0 0-4.2 4.2l-5.2 5.2A1.2 1.2 0 1 0 7 17.4l5.2-5.2A3 3 0 0 0 16.4 8l2.5-2.5-1.7-1.7ZM15.5 14.5l3 3"/></svg>
+            </span>
+            <span class=bottom-nav__label>高级</span>
+        </button>
+        <button type=button class="bottom-nav__item bottom-nav__item--utility" id=navDonateBtn>
+            <span class=bottom-nav__icon aria-hidden=true>
+                <svg viewBox="0 0 24 24"><path d="M20 12v8H4v-8M2 7h20v5H2ZM12 22V7M12 7H7.5A2.5 2.5 0 1 1 12 4.5ZM12 7h4.5A2.5 2.5 0 1 0 12 4.5Z"/></svg>
+            </span>
+            <span class=bottom-nav__label>捐助</span>
+        </button>
+    </nav>
+
+    <script type=module src=Oplus_battmon_webroot.4405203e.js></script>
+    <script type=module src=Oplus_battmon_webroot.c309b584.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.4071e622.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.3735f57b.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.c41d8ced.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.eb33d879.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.e2b0bc3e.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.52247740.js defer></script>
+    <script type=module src=Oplus_battmon_webroot.bd55edb4.js defer></script>
+
+
+

@@ -1,0 +1,155 @@
+#!/system/bin/sh
+
+SCRIPTNAME=$(basename "$0")
+SCRIPTDIR=$(cd "$(dirname "$0")" && pwd)
+OPBATT="$SCRIPTDIR/opbatt_control"
+CONFIG_FILE=/data/opbatt/chg_config
+faketemp=36000
+
+set_fake_batttemp()
+{
+    chmod 0644 /proc/shell-temp
+    for i in seq 0 2; do
+        echo "$i $faketemp" >/proc/shell-temp
+    done
+    chmod 0000 /proc/shell-temp
+}
+
+get_batttemp_fake_status()
+{
+    if [ "$(stat -c "%a" /proc/shell-temp)" -eq 0 ] ;then
+        echo "1"
+    else
+        echo "0"
+    fi
+}
+
+save_config()
+{
+    PPS_STATE=$($OPBATT get_chg pps 2>/dev/null)
+    UFCS_STATE=$($OPBATT get_chg ufcs 2>/dev/null)
+    SVOOC_STATE=$($OPBATT get_chg svooc 2>/dev/null)
+    FAKET_STATE=$(get_batttemp_fake_status)
+    
+    if [ -z "$PPS_STATE" ] && [ -z "$UFCS_STATE" ] && [ -z "$SVOOC_STATE" ]; then
+        return 1
+    fi
+    
+    mkdir -p "$(dirname "$CONFIG_FILE")"
+    {
+        echo "PPS=${PPS_STATE:-0}"
+        echo "UFCS=${UFCS_STATE:-0}"
+        echo "SVOOC=${SVOOC_STATE:-0}"
+        echo "FAKET=${FAKET_STATE:-0}"
+    } > "$CONFIG_FILE"
+}
+
+load_config()
+{
+    if [ ! -f "$CONFIG_FILE" ]; then
+        save_config
+    fi
+    
+    PPS_STATE=$(grep "^PPS=" "$CONFIG_FILE" | cut -d'=' -f2)
+    UFCS_STATE=$(grep "^UFCS=" "$CONFIG_FILE" | cut -d'=' -f2)
+    SVOOC_STATE=$(grep "^SVOOC=" "$CONFIG_FILE" | cut -d'=' -f2)
+    FAKET_STATE=$(grep "^FAKET=" "$CONFIG_FILE" | cut -d'=' -f2)
+    
+    
+    if [ -n "$PPS_STATE" ]; then
+        $OPBATT set_chg pps "$PPS_STATE"
+    fi
+    
+    if [ -n "$UFCS_STATE" ]; then
+        $OPBATT set_chg ufcs "$UFCS_STATE"
+    fi
+    
+    if [ -n "$SVOOC_STATE" ]; then
+        $OPBATT set_chg svooc "$SVOOC_STATE"
+    fi
+    
+    if [ -n "$FAKET_STATE" ]; then
+        if [ "$FAKET_STATE" -eq "1" ] ;then
+            set_fake_batttemp
+        else
+            chmod 0666 /proc/shell-temp
+        fi
+    fi
+}
+
+USEAGE()
+{
+    echo "Usage:"
+    echo "  $SCRIPTNAME set <pps|ufcs|svooc> <0|1>"
+    echo "  $SCRIPTNAME get <pps|ufcs|svooc>"
+    echo "  $SCRIPTNAME set_faket <0|1>"
+    echo "  $SCRIPTNAME get_faket"
+    echo "  $SCRIPTNAME save_config"
+    echo "  $SCRIPTNAME load_config"
+}
+
+if [ ! -x "$OPBATT" ]; then
+    exit 1
+fi
+
+$OPBATT --verify-lic
+RET=$?
+if [ $RET -ne 10 ]; then
+    exit 1
+fi
+
+[ -f "$CONFIG_FILE" ] || touch "$CONFIG_FILE"
+
+if [ $# -lt 1 ]; then
+    USEAGE
+    exit 1
+fi
+
+case "$1" in
+    set)
+        if [ $# -ne 3 ]; then
+            echo "Error: Missing parameters."
+            echo "Usage: $SCRIPTNAME set <pps|ufcs|svooc> <0|1>"
+            exit 1
+        fi
+        $OPBATT set_chg "$2" "$3" || exit 1
+        save_config
+    ;;
+    get)
+        if [ $# -ne 2 ]; then
+            echo "Error: Missing parameters."
+            echo "Usage: $SCRIPTNAME get <pps|ufcs|svooc>"
+            exit 1
+        fi
+        $OPBATT get_chg "$2" || exit 1
+    ;;
+    set_faket)
+        if [ $# -ne 2 ]; then
+            echo "Error: Missing parameters."
+            echo "Usage: $SCRIPTNAME set_faket <0|1>"
+            exit 1
+        fi
+        if [ "$2" -eq "1" ] ;then
+            set_fake_batttemp
+        else
+            chmod 0666 /proc/shell-temp
+        fi
+        save_config
+    ;;
+    get_faket)
+        get_batttemp_fake_status
+    ;;
+    save_config)
+        save_config
+    ;;
+    load_config)
+        load_config
+    ;;
+    *)
+        echo "Invalid command: $1"
+        USEAGE
+        exit 1
+    ;;
+esac
+
+exit 0
