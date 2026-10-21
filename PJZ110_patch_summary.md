@@ -328,7 +328,7 @@ type = "HMBIRD_OGKI";
 
 - `chg_ctl load_config` 重新加载充电器配置；`ioauth ufcs` 在后台运行。
 - 日志写入 `/data/opbatt/battchg.log`，超过 5 MiB 清空；每次循环重写 `module.prop` 的描述，写入 WebUI 地址和 DTBO 校验结果。
-- 校验 `/dev/block/bootdevice/by-name/dtbo<slot>` 与模块内 `dtbo.img` 的 md5；不一致时在模块描述里提示“DTBO 镜像已被修改，请重新刷入模块”。
+- 启动时校验一次 `/dev/block/bootdevice/by-name/dtbo<slot>` 与模块内 `dtbo.img` 的 md5；不一致时在模块描述里提示“DTBO 镜像已被修改，请重新刷入模块”。
 - 刷新深度放电计数：
 
 ```sh
@@ -342,7 +342,7 @@ echo 0 > /sys/class/oplus_chg/common/deep_dischg_count_cali
 这段就是第 1 节所说“FCC 统计修复”的运行时部分：它不依赖 `patch_ddrc`，每次开机都执行。
 
 - 把 `bcc_current` 写为 13700，`normal_cool_down`、`cool_down` 写 0，然后把这三个节点改成只读；把 `current_now` 改成 0444。
-- 循环执行 `/data/opbatt/bin/opbatt_control`；退出码 1/2 等 10 秒重试，3–6 也等 10 秒重启服务。
+- 循环执行 `$MODDIR/bin/opbatt_control`；退出码 1/2 等 10 秒重试，3–6 也等 10 秒重启服务。
 
 因此安装提示才会要求“重启时断开充电器”，让解容和统计刷新在无充电器状态下完成第一次校准。
 
