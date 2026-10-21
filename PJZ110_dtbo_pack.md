@@ -89,7 +89,7 @@ mv $1.m $1
 
 `fdtoverlay` 把 overlay 按 label 合并进目标 dtb。命令失败时不会生成 `$1.m`，随后的 `mv` 也失败，原 dtb 保持不变——是静默跳过，不是报错退出。
 
-3. 处理删除清单：值为 0 的 `rm_*` 和始终执行的 `force_rm_*`，由 `rm_proc_from_file` 逐行解析，`r` 用 `fdtput -r` 删节点，`d` 用 `fdtput -d` 删属性。
+3. 处理删除清单：值为 0 的 `rm_*` 和始终执行的 `force_rm_*`，由 `rm_proc_from_file` 逐行解析，`r` 用 `fdtput -r` 删节点，`d` 用 `fdtput -d` 删属性。`force_rm_lcf` 删的是 UFCS/PPS 的 LCF（Low Current Full，低电流充满判定）策略节点；哪些节点真正被驱动读取、删除后如何判满，见 `PJZ110_patch_summary.md` 第 7 节。
 4. `namemark` 在根节点 `model` 字符串末尾追加 ` jzmod_<dtb文件名>`，作为已处理标记：
 
 ```sh
