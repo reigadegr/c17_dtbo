@@ -288,7 +288,7 @@ DT 里 UFCS 上限被提到 14600 mA、PPS 提到 6500 mA，但 `/data/opbatt/ba
 /fragment@90/__overlay__/oplus,hmbird/version_type/type
 ```
 
-对应 `dts.dtb.5` 第 7239–7244 行，当前值在第 7241 行：
+对应 `dts.dtb.5` 第 7239–7244 行，当前值在第 7242 行：
 
 ```dts
 type = "HMBIRD_OGKI";
