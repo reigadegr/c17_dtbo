@@ -1,0 +1,39 @@
+/dts-v1/;
+/plugin/;
+
+/*
+ * USB 口（usbtemp）温控阈值上抬补丁 —— 压制「检测到异物或液体」误报
+ *
+ * 结论来源：vendor/oplus/kernel/charger/v2/mms/oplus_mms_wired.c
+ *   - 断充(bit0 USB_TEMP_HIGH) = 口温 >= NTC 绝对值，或 口温 - 电池温 >= gap
+ *   - 降流(cool_down) 两级：先按 cool_down_* 投票限流，再由上面的判定断充
+ *
+ * 原厂参数有个顺序错误：cool_down_gap_high(20) > 断充 gap_high(12)，
+ * 意味着限流永远赶不上断充，实际表现就是「不降流、直接断」，所以误报体感极差。
+ * 本补丁在抬高端口阈值的同时把两级顺序理顺：先限流，再断充。
+ */
+
+&oplus_mms_wired {
+	/* 断充绝对阈值：57 -> 60 / 69 -> 72 */
+	oplus_spec,usbtemp_ntc_temp_low = <0x3c>;
+	oplus_spec,usbtemp_ntc_temp_high = <0x48>;
+
+	/* 断充相对阈值（口温 - 电池温）：7 -> 12 / 12 -> 18 */
+	oplus_spec,usbtemp_temp_gap_low_with_batt_temp = <0x0c>;
+	oplus_spec,usbtemp_temp_gap_high_with_batt_temp = <0x12>;
+
+	/* 电池温度不可用时的兜底相对阈值：12 -> 15 / 24 -> 28 */
+	oplus_spec,usbtemp_temp_gap_low_without_batt_temp = <0x0f>;
+	oplus_spec,usbtemp_temp_gap_high_without_batt_temp = <0x1c>;
+
+	/* 第一级限流（小电流）：54/12 -> 57/9，保持低于断充 60/12 */
+	oplus_spec,usbtemp_cool_down_ntc_low = <0x39>;
+	oplus_spec,usbtemp_cool_down_gap_low = <0x09>;
+
+	/* 第一级限流（大电流）：20 -> 14，必须低于断充 gap 18 才能先触发 */
+	oplus_spec,usbtemp_cool_down_gap_high = <0x0e>;
+
+	/* 回差跟随抬升，避免限流反复开关 */
+	oplus_spec,usbtemp_cool_down_recover_ntc_low = <0x33>;
+	oplus_spec,usbtemp_cool_down_recover_gap_high = <0x0a>;
+};
